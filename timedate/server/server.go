@@ -36,6 +36,7 @@ func main() {
 	}
 }
 
+// broadcaster controls clients's connections and sends them messages
 func broadcaster() {
 	clients := make(map[client]bool)
 	for {
@@ -55,33 +56,37 @@ func broadcaster() {
 	}
 }
 
+// msgGenerator produces a message once a second
 func msgGenerator() {
 	// channel for user's messages to compete with 1-second ticker
 	userChan := make(chan string)
-
 	// read messages from server's console
 	go func() {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			userChan <- scanner.Text()
+		reader := bufio.NewReader(os.Stdin)
+		for {
+			fmt.Print("Enter text: ")
+			text, _ := reader.ReadString('\n')
+			text = text[:len(text)-1] // crop the last symbol '\n'
+			userChan <- text
 		}
-
 	}()
 
 	ticker := time.NewTicker(1 * time.Second)
-
+	var message string
 	for {
-
+		// send a message once a second
 		<-ticker.C
 		select {
-		case userMsg := <-userChan:
-			messages <- time.Now().Format("15:04:05\n\r") + userMsg
-		default:
-			messages <- time.Now().Format("15:04:05\n\r")
+		case userMsg := <-userChan: // user's message has come
+			message = time.Now().Format("15:04:05") + " " + userMsg
+		default: // no messages has come
+			message = time.Now().Format("15:04:05")
 		}
+		messages <- message
 	}
 }
 
+// handleCon works with patrticular client's connection
 func handleConn(conn net.Conn) {
 	ch := make(chan string)
 
