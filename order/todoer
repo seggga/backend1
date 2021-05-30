@@ -1,0 +1,27 @@
+скомпоновал раздел components:
+    схема users
+    схема items
+    security
+
+задал тэги, чтобы проще ориентироваться в swagger:
+- user
+- item
+
+добавил подразделы:
+  responses в /items/upload_image (обязательное поле)
+  ApiResponse в раздел components (чтобы работало responses)
+
+
+создал подраздел components:schemas:order
+- id        заказа
+- itemId    товара
+- quantity  количество товаров в заказе
+- status - статус заказа
+    - placed        размещен
+    - approved      оплачен
+    - delivered     доставлен
+- complete  флаг завершенности заказа
+
+добавил пути:
+/orders - создание нового заказа (метод post)
+/orders/{orderID} - поиск (get) и удаление (delete) определенного заказа
