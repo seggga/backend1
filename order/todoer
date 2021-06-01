@@ -9,7 +9,6 @@
 
 добавил подразделы:
   responses в /items/upload_image (обязательное поле)
-  ApiResponse в раздел components (чтобы работало responses)
 
 
 создал подраздел components:schemas:order
