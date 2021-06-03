@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/seggga/backend1/fileserver/handlers"
 )
 
 func main() {
@@ -19,5 +22,29 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	srv.ListenAndServe()
+
+	dirToServe := http.Dir(uploadHandler.UploadDir)
+	fs := &http.Server{
+		Addr:         ":8080",
+		Handler:      http.FileServer(dirToServe),
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	go func() {
+		err := srv.ListenAndServe()
+		if err != nil {
+			fmt.Println("error starting server")
+			return
+		}
+	}()
+
+	go func() {
+		err := fs.ListenAndServe()
+		if err != nil {
+			fmt.Println("error starting server")
+			return
+		}
+	}()
+
 }
