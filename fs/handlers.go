@@ -1,13 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"path/filepath"
-	"strconv"
 )
+
+type FileData struct {
+	Name string
+	Ext  string
+	Size int64
+}
 
 // uploader is http.HandleFunc that saves files in the serveDir
 func uploader(w http.ResponseWriter, r *http.Request) {
@@ -37,20 +43,20 @@ func uploader(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// send back a link of saved file
-	fileLink := serverAddr + "/" + header.Filename
+	fileLink := "http://" + serverAddr + "/" + header.Filename
 	fmt.Fprintln(w, fileLink)
 
 }
 
 // lister is http.HandleFunc that lists data about files stored in serveDir
 func lister(w http.ResponseWriter, r *http.Request) {
-	// check for GET method
+	// check if method is GET
 	if r.Method != http.MethodGet {
 		http.Error(w, "GET-method expected", http.StatusBadRequest)
 		return
 	}
 
-	// obtain list of files
+	// obtain list of filesystem objects on server
 	files, err := ioutil.ReadDir(serveDir)
 	if err != nil {
 		log.Printf("cannot read file from directory %s", serveDir)
@@ -58,17 +64,25 @@ func lister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var filesData string
-
+	// find files and make a slice of file-attributes
+	var filesData []FileData
 	for _, someFile := range files {
 		if !someFile.IsDir() {
-			filesData += someFile.Name()
-			filesData += "\t"
-			filesData += filepath.Ext(someFile.Name())
-			filesData += "\t"
-			filesData += strconv.Itoa(int(someFile.Size()))
-			filesData += "\n"
+			fileAttr := FileData{
+				Name: someFile.Name(),
+				Ext:  filepath.Ext(someFile.Name()),
+				Size: someFile.Size(),
+			}
+			filesData = append(filesData, fileAttr)
 		}
 	}
-	fmt.Fprintln(w, filesData)
+
+	// create a response JSON
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(filesData)
+	if err != nil {
+		log.Printf("cannot convert data into json %v", err)
+		http.Error(w, "Unable to read directory", http.StatusBadRequest)
+		return
+	}
 }
