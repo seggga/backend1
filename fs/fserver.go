@@ -14,8 +14,8 @@ var (
 func main() {
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/upload", uploader)
-	mux.HandleFunc("/list", lister)
+	mux.HandleFunc("/upload", uploadHandleFunc)
+	mux.HandleFunc("/list", listHandleFunc)
 
 	fs := &http.Server{
 		Addr:         serverAddr,
