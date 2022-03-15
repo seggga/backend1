@@ -11,7 +11,14 @@ import (
 )
 
 func main() {
-	handler := handler.New("upload")
+
+	uploadDir := "upload"
+	err := createFolder(uploadDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	handler := handler.New(uploadDir)
 	srv := server.New(":8080", handler)
 
 	srv.Start()
@@ -23,4 +30,22 @@ func main() {
 	log.Println("received OS interrupting signal")
 	srv.Stop()
 
+}
+
+func createFolder(s string) error {
+	_, err := os.Stat(s)
+	switch {
+	case os.IsNotExist(err):
+		log.Println("create folder", s)
+		err := os.Mkdir(s, 0755)
+		if err != nil {
+			log.Println("cannot create folder", s, err)
+			return err
+		}
+
+	default:
+		return err
+
+	}
+	return nil
 }
