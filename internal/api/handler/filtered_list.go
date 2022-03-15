@@ -42,7 +42,7 @@ func (rt *Router) filteredList(w http.ResponseWriter, r *http.Request) {
 			// DTO
 			File{
 				Name:        name,
-				Extention:   fileExtension,
+				Extension:   fileExtension,
 				SizeInBytes: int(f.Size()),
 				FileLink:    "/download/" + name,
 			},
