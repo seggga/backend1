@@ -41,7 +41,7 @@ func TestUpload(t *testing.T) {
 
 	w := &httptest.ResponseRecorder{}
 	h := New(testDir)
-	h.uploadFunc(w, r)
+	h.UploadFunc(w, r)
 
 	// expect file existence
 	if _, err := os.Stat(filepath.Join(testDir, testFile)); errors.Is(err, os.ErrNotExist) {
@@ -74,7 +74,7 @@ func TestList(t *testing.T) {
 	h := New(testDir)
 	r := httptest.NewRequest(http.MethodGet, "/list", nil)
 	w := httptest.NewRecorder()
-	h.listFilesFunc(w, r)
+	h.ListFilesFunc(w, r)
 
 	outData := make([]File, 0)
 	fileData := &File{}

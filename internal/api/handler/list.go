@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func (rt *Router) listFilesFunc(w http.ResponseWriter, r *http.Request) {
+func (h *Hands) ListFilesFunc(w http.ResponseWriter, r *http.Request) {
 	log.Println("/list handler has been called")
 
 	if r.Method != http.MethodGet {
@@ -16,7 +16,7 @@ func (rt *Router) listFilesFunc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files, err := ioutil.ReadDir(rt.Dir)
+	files, err := ioutil.ReadDir(h.dir)
 	if err != nil {
 		log.Fatal(err)
 	}

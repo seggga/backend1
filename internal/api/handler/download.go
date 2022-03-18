@@ -2,7 +2,7 @@ package handler
 
 import "net/http"
 
-func (rt *Router) downloadFunc() http.Handler {
-	dirToServe := http.Dir(rt.Dir)
+func (h *Hands) DownloadFunc() http.Handler {
+	dirToServe := http.Dir(h.dir)
 	return http.StripPrefix("/download/", http.FileServer(dirToServe))
 }

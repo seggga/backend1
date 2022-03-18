@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (rt *Router) uploadFunc(w http.ResponseWriter, r *http.Request) {
+func (h *Hands) UploadFunc(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("/upload handler has been called")
 
@@ -31,7 +31,7 @@ func (rt *Router) uploadFunc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filePath := rt.Dir + "/" + header.Filename
+	filePath := h.dir + "/" + header.Filename
 	log.Println("writing file ", filePath)
 	err = ioutil.WriteFile(filePath, data, 0777)
 	if err != nil {

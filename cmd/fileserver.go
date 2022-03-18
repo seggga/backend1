@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/seggga/backend1/internal/api/handler"
+	"github.com/seggga/backend1/internal/api/router/defaultmux"
 	"github.com/seggga/backend1/internal/api/server"
 )
 
@@ -18,8 +18,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	handler := handler.New(uploadDir)
-	srv := server.New(":8080", handler)
+	router := defaultmux.New(uploadDir)
+	srv := server.New(":8080", router)
 
 	srv.Start()
 

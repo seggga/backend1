@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func (rt *Router) filteredList(w http.ResponseWriter, r *http.Request) {
+func (h *Hands) FilteredList(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("/filtered-list handler has been called")
 
@@ -24,7 +24,7 @@ func (rt *Router) filteredList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files, err := ioutil.ReadDir(rt.Dir)
+	files, err := ioutil.ReadDir(h.dir)
 	if err != nil {
 		log.Fatal(err)
 	}
