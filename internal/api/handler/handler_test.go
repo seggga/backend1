@@ -117,7 +117,6 @@ func TestList(t *testing.T) {
 func createTestFolder() error {
 	_, err := os.Stat(testDir)
 	if os.IsNotExist(err) {
-		log.Println("folder not exist", err)
 		err := os.Mkdir(testDir, 0755)
 		if err != nil {
 			log.Println("cannot create folder", err)
